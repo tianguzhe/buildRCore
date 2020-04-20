@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -12,15 +13,22 @@ func main() {
 
 	workdir := "app-arm64-v8a-debug"
 
-	//cmd := exec.Command("rm", "-rf", "./clashR*.apk")
-	//fmt.Printf("%s", "删除旧版本........")
-	//runComd(cmd)
-	//
-	//cmd = exec.Command("java", "-jar", "apktool_2.4.1.jar", "d", "/Users/zhui/AndroidStudioProjects/ClashForAndroid/app/build/outputs/apk/debug/"+workdir+".apk")
-	//fmt.Printf("%s", "正在反编译.........")
-	//runComd(cmd)
+	cmd := exec.Command("rm", "-rf", "./clashR*.apk")
+	fmt.Printf("%s", "删除旧版本........")
+	runComd(cmd)
 
-	cmd := exec.Command("rm", "-rf", "./"+workdir+"/lib")
+	cmd = exec.Command("java", "-jar", "apktool_2.4.1.jar", "d", "/Users/zhui/AndroidStudioProjects/ClashForAndroid/app/build/outputs/apk/debug/"+workdir+".apk")
+	fmt.Printf("%s", "正在反编译.........")
+	runComd(cmd)
+
+	b, _ := ioutil.ReadFile("./" + workdir + "/AndroidManifest.xml")
+	cmd = exec.Command("rm", "-rf", "./"+workdir+"/AndroidManifest.xml")
+	fmt.Printf("%s", "修改AndroidManifest.xml........")
+	runComd(cmd)
+	all := strings.ReplaceAll(string(b), " android:extractNativeLibs=\"false\"", "")
+	_ = ioutil.WriteFile("./"+workdir+"/AndroidManifest.xml", []byte(all), 0644)
+
+	cmd = exec.Command("rm", "-rf", "./"+workdir+"/lib")
 	fmt.Printf("%s", "正在替换内核........")
 	runComd(cmd)
 
