@@ -13,7 +13,7 @@ func main() {
 
 	workdir := "app-arm64-v8a-debug"
 
-	cmd := exec.Command("rm", "-rf", "./clashR*.apk")
+	cmd := exec.Command("rm", "-rf", workdir)
 	fmt.Printf("%s", "删除旧版本........")
 	runComd(cmd)
 
@@ -40,7 +40,7 @@ func main() {
 	fmt.Printf("%s", "正在重新打包........")
 	runComd(cmd)
 
-	format := time.Now().Format("20060102-150304")
+	format := time.Now().Format("20060102-150405")
 	cmd = exec.Command("./apksigner", "sign", "--ks", "./clashr.jks", "--ks-key-alias", "key0", "--ks-pass", "pass:123456", "--out", "./clashR"+format+".apk", "./new.apk")
 	fmt.Printf("%s", "重签名成功........")
 	runComd(cmd)
